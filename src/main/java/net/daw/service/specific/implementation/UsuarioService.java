@@ -28,11 +28,15 @@ package net.daw.service.specific.implementation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Random;
 import net.daw.service.generic.implementation.TableServiceGenImpl;
 import javax.servlet.http.HttpServletRequest;
+import net.daw.bean.specific.implementation.CompraBean;
 import net.daw.bean.specific.implementation.UsuarioBean;
 import net.daw.connection.implementation.BoneConnectionPoolImpl;
 import net.daw.connection.publicinterface.ConnectionInterface;
+import net.daw.dao.specific.implementation.CompraDao;
 import net.daw.dao.specific.implementation.UsuarioDao;
 import net.daw.helper.statics.ExceptionBooster;
 import net.daw.helper.statics.JsonMessage;
@@ -43,13 +47,16 @@ public class UsuarioService extends TableServiceGenImpl {
         super(request);
     }
 
+    
+    // Metodo para el login
+    
     public String login() throws SQLException, Exception {
         UsuarioBean oUserBean = (UsuarioBean) oRequest.getSession().getAttribute("userBean");
         String strAnswer = null;
         String strCode = "200";
         if (oUserBean == null) {
             String login = oRequest.getParameter("login");
-            String pass = oRequest.getParameter("password");
+            String pass = oRequest.getParameter("pass");
             if (!login.equals("") && !pass.equals("")) {
                 ConnectionInterface DataConnectionSource = null;
                 Connection oConnection = null;
@@ -61,9 +68,24 @@ public class UsuarioService extends TableServiceGenImpl {
                     oUsuario.setPassword(pass);
                     UsuarioDao oUsuarioDao = new UsuarioDao(oConnection);
                     oUsuario = oUsuarioDao.getFromLogin(oUsuario);
-                    if (oUsuario.getId() != 0) {
+
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(oUsuario.getFnac());
+                    Integer m = calendar.get(Calendar.MONTH);
+                    Integer month = m + 1;
+
+                    String mes = "";
+                    if (month < 10) {
+                        mes = "0" + month;
+                    } else {
+                        mes = Integer.toString(month);
+                    }
+
+                    String passFecha = oUsuario.getPassword() + mes;
+                    if (pass == null ? passFecha == null : pass.equals(passFecha)) {
                         oRequest.getSession().setAttribute("userBean", oUsuario);
-                        strAnswer = oUsuario.getLogin();
+                        strCode = "200";
+                        strAnswer = "Todo va dpm tío";
                     } else {
                         strCode = "403";
                         strAnswer = "User or password incorrect";
@@ -85,29 +107,176 @@ public class UsuarioService extends TableServiceGenImpl {
         return JsonMessage.getJsonMsg(strCode, strAnswer);
     }
 
-    public String logout() {        
-        oRequest.getSession().invalidate();
-        return JsonMessage.getJsonMsg("200", "Bye");
+    public String logout() {
+        oRequest.getSession().invalidate(); //Con el invalidate() terminas con la sesión.
+        return JsonMessage.getJsonMsg("200", "¿Ya te vas tío?");
     }
 
-    public String getsessionstatus() {
-        String strAnswer = null;
+    
+    
+        // Metodo para checkear la sesion, que usuario hay en ella
+    
+    public String check() {
+        //String strAnswer = null;
         UsuarioBean oUserBean = (UsuarioBean) oRequest.getSession().getAttribute("userBean");
+        String retorno = "";
         if (oUserBean == null) {
-            return JsonMessage.getJsonMsg("403", "ERROR: You don't have permission to perform this operation");
+            retorno = "{\"status\":\"KO\"}";
         } else {
-            return JsonMessage.getJsonMsg("200", oUserBean.getLogin());
+            retorno = "{\"status\":\"OK\",";
+            retorno += "\"id\":" + oUserBean.getId() + ",";
+            retorno += "\"nombrecompleto\":\"" + oUserBean.getNombre() + " " + oUserBean.getApe1() + " " + oUserBean.getApe2() + "\",";
+            
+            
+            
+            
+            
+//            ConnectionInterface DataConnectionSource = null;
+//            Connection oConnection = null;
+//            try {
+//                DataConnectionSource = new BoneConnectionPoolImpl();
+//                oConnection = DataConnectionSource.newConnection();
+//                
+//                UsuarioDao oUsuarioDao = new UsuarioDao(oConnection);
+//                
+////                retorno += "\"tipos\":\"" + oUsuarioDao.getTipoProductos(oUserBean.getId()) + "\"";
+//                
+//            } catch (Exception ex) {
+//                ExceptionBooster.boost(new Exception(this.getClass().getName() + ":login ERROR " + ex.toString()));
+//            } finally {
+//                if (oConnection != null) {
+//                    oConnection.close();
+//                }
+//                if (DataConnectionSource != null) {
+//                    DataConnectionSource.disposeConnection();
+//                }
+//            }
+            retorno += "}";
         }
+        return retorno;
     }
 
-    public int sessionuserlevel() {
-        String strAnswer = null;
+    // Metodo para el cambio de usuario mediante su id
+    
+    
+    public String change() throws SQLException, Exception {
         UsuarioBean oUserBean = (UsuarioBean) oRequest.getSession().getAttribute("userBean");
+        String retorno = "";
+
         if (oUserBean == null) {
-            return 0;
+            retorno = "{\"status\":\"KO\"}";
         } else {
-            return oUserBean.getId_estado();
+            Integer id = Integer.parseInt(oRequest.getParameter("id_usuario"));
+            ConnectionInterface DataConnectionSource = null;
+            Connection oConnection = null;
+            DataConnectionSource = new BoneConnectionPoolImpl();
+            oConnection = DataConnectionSource.newConnection();
+            UsuarioBean oUsuario = new UsuarioBean();
+            oUsuario.setId(id);
+            UsuarioDao oUsuarioDao = new UsuarioDao(oConnection);
+            oUsuario = oUsuarioDao.get(oUsuario, 1);
+            oRequest.getSession().setAttribute("userBean", oUsuario);
+            retorno = "{\"status\":\"Se ha cambiado el usuario.\"}";
         }
+        return retorno;
     }
+
+    
+    
+        // Metodo para hacer la compra mediante el id del producto y su cantidad
+
+    
+    public String buy() throws SQLException, Exception {
+
+        String retorno = "";
+        UsuarioBean oUserBean = (UsuarioBean) oRequest.getSession().getAttribute("userBean");
+
+        if (oUserBean == null) { //Si no hay sesion...
+            retorno = "{\"status\":\"KO\"}";
+        } else {
+
+            Integer idProducto = Integer.parseInt(oRequest.getParameter("id_producto"));
+            Integer cantidad = Integer.parseInt(oRequest.getParameter("cantidad"));
+
+            ConnectionInterface DataConnectionSource = null;
+            Connection oConnection = null;
+            DataConnectionSource = new BoneConnectionPoolImpl();
+            oConnection = DataConnectionSource.newConnection();
+            CompraBean oCompra = new CompraBean();
+            oCompra.setId_producto(idProducto);
+            oCompra.setCantidad(cantidad);
+            oCompra.setId_usuario(oUserBean.getId()); //ya está el pojo lleno
+            CompraDao oCompraDao = new CompraDao(oConnection);
+            oCompraDao.set(oCompra);
+            retorno = "{\"status\":\"OK\"}";
+        }
+
+        return retorno;
+
+    }
+    
+    // Metodo para el login con numeros
+    
+//    public String loginnum() throws SQLException, Exception {
+//        UsuarioBean oUserBean = (UsuarioBean) oRequest.getSession().getAttribute("userBean");
+//        String strAnswer = null;
+//        String strCode = "200";
+//        if (oUserBean == null) {
+//            
+//            Integer num1 = 2;
+//            Integer num2 = 3;
+//            Integer suma = num1 + num2;
+//            
+//            
+//            if (num1 == num2) {
+//                
+//                ConnectionInterface DataConnectionSource = null;
+//                Connection oConnection = null;
+//                try {
+//                    DataConnectionSource = new BoneConnectionPoolImpl();
+//                    oConnection = DataConnectionSource.newConnection();
+//                    UsuarioBean oUsuario = new UsuarioBean();
+//                    oUsuario.setLogin(login);
+//                    oUsuario.setPassword(pass);
+//                    UsuarioDao oUsuarioDao = new UsuarioDao(oConnection);
+//                    oUsuario = oUsuarioDao.getFromLogin(oUsuario);
+//
+//                    Calendar calendar = Calendar.getInstance();
+//                    calendar.setTime(oUsuario.getFnac());
+//                    Integer m = calendar.get(Calendar.MONTH);
+//                    Integer month = m + 1;
+//
+//                    String mes = "";
+//                    if (month < 10) {
+//                        mes = "0" + month;
+//                    } else {
+//                        mes = Integer.toString(month);
+//                    }
+//
+//                    String passFecha = oUsuario.getPassword() + mes;
+//                    if (pass == null ? passFecha == null : pass.equals(passFecha)) {
+//                        oRequest.getSession().setAttribute("userBean", oUsuario);
+//                        strCode = "200";
+//                        strAnswer = "Todo va dpm tío";
+//                    } else {
+//                        strCode = "403";
+//                        strAnswer = "User or password incorrect";
+//                    }
+//                } catch (Exception ex) {
+//                    ExceptionBooster.boost(new Exception(this.getClass().getName() + ":login ERROR " + ex.toString()));
+//                } finally {
+//                    if (oConnection != null) {
+//                        oConnection.close();
+//                    }
+//                    if (DataConnectionSource != null) {
+//                        DataConnectionSource.disposeConnection();
+//                    }
+//                }
+//            }
+//        } else {
+//            strAnswer = "Already logged in";
+//        }
+//        return JsonMessage.getJsonMsg(strCode, strAnswer);
+//    }
 
 }

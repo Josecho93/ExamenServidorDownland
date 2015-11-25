@@ -50,7 +50,7 @@ import net.daw.helper.statics.JsonMessage;
 import net.daw.helper.statics.ParameterCook;
 import net.daw.service.publicinterface.MetaServiceInterface;
 
-public class json extends HttpServlet {
+public class control extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
@@ -69,7 +69,7 @@ public class json extends HttpServlet {
     }
 
     private void writeLog(HttpServletRequest request, HttpServletResponse response, String strMessage) throws ServletException, IOException {
-        Logger.getLogger(json.class.getName()).log(Level.SEVERE, null, request.getRemoteHost() + ": " + request.getRemoteAddr() + ": " + strMessage);
+        Logger.getLogger(control.class.getName()).log(Level.SEVERE, null, request.getRemoteHost() + ": " + request.getRemoteAddr() + ": " + strMessage);
 
     }
 
@@ -99,14 +99,98 @@ public class json extends HttpServlet {
             if (EstadoHelper.getTipo_estado() == Tipo_estado.Debug) {
                 retardo(EstadoHelper.getDelay());    //optional debug delay
             }
-            String ob = ParameterCook.prepareObject(request);
+            //String ob = ParameterCook.prepareObject(request); //No hace falta usarlo aquí
             String op = ParameterCook.prepareOperation(request);
             try {
-                String strClassName = "net.daw.service.specific.implementation." + ParameterCook.prepareCamelCaseObject(request) + "Service";
-                MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
-                Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
-                String jsonResult = (String) oMethodService.invoke(oService);
-                sendResponse2(request, response, jsonResult);
+//                String strClassName = "net.daw.service.specific.implementation." + ParameterCook.prepareCamelCaseObject(request) + "Service";
+//                MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+//                Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+//                String jsonResult = (String) oMethodService.invoke(oService);
+//                sendResponse2(request, response, jsonResult);
+
+                // Aqui empezamos a programar
+                if ("login".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+                if ("logout".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+                if ("check".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+
+                if ("change".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+                if ("buy".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+                if ("rem".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+                if ("duplicate".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+                if ("loginnum".equals(op)) {
+
+                    // Redirige a la clase service
+                    String strClassName = "net.daw.service.specific.implementation.UsuarioService";
+                    MetaServiceInterface oService = (MetaServiceInterface) Class.forName(strClassName).getDeclaredConstructor(HttpServletRequest.class).newInstance(request);
+                    Method oMethodService = oService.getClass().getMethod(ParameterCook.prepareOperation(request));
+                    String jsonResult = (String) oMethodService.invoke(oService);
+                    sendResponse2(request, response, jsonResult);
+
+                };
+
             } catch (ClassNotFoundException | InstantiationException | IllegalAccessException ex) {
                 ExceptionBooster.boost(new Exception(this.getClass().getName() + ":processRequest ERROR: no such operation"));
             }

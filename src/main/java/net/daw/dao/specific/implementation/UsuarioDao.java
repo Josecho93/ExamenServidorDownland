@@ -38,21 +38,27 @@ public class UsuarioDao extends TableDaoGenImpl<UsuarioBean> {
 
     }
 
+    
+    // Rellena el pojo a partir del login
     public UsuarioBean getFromLogin(UsuarioBean oUsuario) throws Exception {
         try {
             String strId = oMysql.getId("usuario", "login", oUsuario.getLogin());
             if (strId == null) {
                 oUsuario.setId(0);
             } else {
-                Integer intId = Integer.parseInt(strId);
-                oUsuario.setId(intId);
-                String pass = oUsuario.getPassword();
-                oUsuario.setPassword(oMysql.getOne(strSqlSelectDataOrigin, "password", oUsuario.getId()));
-                if (!pass.equals(oUsuario.getPassword())) {
-                    oUsuario.setId(0);
-                }
+                
+                oUsuario.setId(Integer.parseInt(strId));
+//                Integer intId = Integer.parseInt(strId);
+//                oUsuario.setId(intId);
+//                String pass = oUsuario.getPassword();
+//                oUsuario.setPassword(oMysql.getOne(strSqlSelectDataOrigin, "password", oUsuario.getId()));
+//                if (!pass.equals(oUsuario.getPassword())) {
+//                    oUsuario.setId(0);
+//                }
                 oUsuario = this.get(oUsuario, AppConfigurationHelper.getJsonDepth());
             }
+            
+            // Lo devuelve a la capa service
             return oUsuario;
         } catch (Exception e) {
             throw new Exception("UsuarioDao.getFromLogin: Error: " + e.getMessage());

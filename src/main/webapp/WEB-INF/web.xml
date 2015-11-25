@@ -9,8 +9,8 @@
         <servlet-class>net.daw.control.JspControl</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>json</servlet-name>
-        <servlet-class>net.daw.control.json</servlet-class>
+        <servlet-name>control</servlet-name>
+        <servlet-class>net.daw.control.control</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>ControlJson</servlet-name>
@@ -21,8 +21,8 @@
         <url-pattern>/jsp</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>json</servlet-name>
-        <url-pattern>/json</url-pattern>
+        <servlet-name>control</servlet-name>
+        <url-pattern>/control</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

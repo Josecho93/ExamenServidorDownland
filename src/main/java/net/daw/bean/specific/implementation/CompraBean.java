@@ -36,16 +36,16 @@ import net.daw.helper.annotations.TableSourceMetaInformation;
 import net.daw.helper.statics.MetaEnum;
 
 @TableSourceMetaInformation(
-        TableName = "usuario",
+        TableName = "compra",
         Description = "Usuarios del sistema"
 )
-public class UsuarioBean extends BeanGenImpl implements BeanInterface {
+public class CompraBean extends BeanGenImpl implements BeanInterface {
 
-    public UsuarioBean() {
+    public CompraBean() {
         this.id = 0;
     }
 
-    public UsuarioBean(Integer id) {
+    public CompraBean(Integer id) {
         this.id = id;
     }
 
@@ -60,49 +60,7 @@ public class UsuarioBean extends BeanGenImpl implements BeanInterface {
     )
     private Integer id;
 
-    
-        @Expose
-    @MethodMetaInformation(
-            UltraShortName = "Login",
-            ShortName = "Login",
-            Description = "Nombre de usuario",
-            Type = MetaEnum.FieldType.String,
-            IsForeignKeyDescriptor = true
-    )
-    private String nombre = "";
-    
-            @Expose
-    @MethodMetaInformation(
-            UltraShortName = "Login",
-            ShortName = "Login",
-            Description = "Nombre de usuario",
-            Type = MetaEnum.FieldType.String,
-            IsForeignKeyDescriptor = true
-    )
-    private String ape1 = "";
-            
-                    @Expose
-    @MethodMetaInformation(
-            UltraShortName = "Login",
-            ShortName = "Login",
-            Description = "Nombre de usuario",
-            Type = MetaEnum.FieldType.String,
-            IsForeignKeyDescriptor = true
-    )
-    private String ape2 = "";
-    
-            @Expose
-    @MethodMetaInformation(
-            UltraShortName = "Login",
-            ShortName = "Login",
-            Description = "Nombre de usuario",
-            Type = MetaEnum.FieldType.Integer,
-            IsForeignKeyDescriptor = true
-    )
-    private Integer sexo = 0;
-    
-    
-            @Expose
+    @Expose
     @MethodMetaInformation(
             UltraShortName = "Login",
             ShortName = "Login",
@@ -110,28 +68,45 @@ public class UsuarioBean extends BeanGenImpl implements BeanInterface {
             Type = MetaEnum.FieldType.Date,
             IsForeignKeyDescriptor = true
     )
-    private Date fnac = new Date();
-    
-    
+    private Date fecha = new Date();
     
     @Expose
     @MethodMetaInformation(
-            UltraShortName = "Login",
-            ShortName = "Login",
-            Description = "Nombre de usuario",
-            Type = MetaEnum.FieldType.String,
-            IsForeignKeyDescriptor = true
+            IsId = true,
+            UltraShortName = "Iden.",
+            ShortName = "Identif.",
+            Description = "Número Identificador",
+            Type = MetaEnum.FieldType.Integer,
+            IsForeignKeyDescriptor = true,
+            IsIdForeignKey = true,
+            ReferencesTable = "usuario",
+            DefaultValue = "0"
     )
-    private String login = "";
-
+    private Integer id_usuario = 0;
+    
     @Expose
     @MethodMetaInformation(
-            UltraShortName = "Pass",
-            ShortName = "Password",
-            Description = "Frase de paso",
-            Type = MetaEnum.FieldType.String
+            IsId = true,
+            UltraShortName = "Iden.",
+            ShortName = "Identif.",
+            Description = "Número Identificador",
+            Type = MetaEnum.FieldType.Integer,
+            IsIdForeignKey = true,
+            ReferencesTable = "usuario",
+            DefaultValue = "0"
     )
-    private String password = "";
+    private Integer id_producto = 0;
+    
+    @Expose
+    @MethodMetaInformation(
+            IsId = true,
+            UltraShortName = "Iden.",
+            ShortName = "Identif.",
+            Description = "Número Identificador",
+            Type = MetaEnum.FieldType.Integer,
+            DefaultValue = "0"
+    )
+    private Integer cantidad = 0;
 
     public Integer getId() {
         return id;
@@ -141,61 +116,36 @@ public class UsuarioBean extends BeanGenImpl implements BeanInterface {
         this.id = id;
     }
 
-    public String getNombre() {
-        return nombre;
+    public Date getFecha() {
+        return fecha;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
+    public void setFecha(Date fecha) {
+        this.fecha = fecha;
     }
 
-    public String getApe1() {
-        return ape1;
+    public Integer getId_usuario() {
+        return id_usuario;
     }
 
-    public void setApe1(String ape1) {
-        this.ape1 = ape1;
+    public void setId_usuario(Integer id_usuario) {
+        this.id_usuario = id_usuario;
     }
 
-    public String getApe2() {
-        return ape2;
+    public Integer getId_producto() {
+        return id_producto;
     }
 
-    public void setApe2(String ape2) {
-        this.ape2 = ape2;
+    public void setId_producto(Integer id_producto) {
+        this.id_producto = id_producto;
     }
 
-    public Integer getSexo() {
-        return sexo;
+    public Integer getCantidad() {
+        return cantidad;
     }
 
-    public void setSexo(Integer sexo) {
-        this.sexo = sexo;
+    public void setCantidad(Integer cantidad) {
+        this.cantidad = cantidad;
     }
-
-    public Date getFnac() {
-        return fnac;
-    }
-
-    public void setFnac(Date fnac) {
-        this.fnac = fnac;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
 
 }
